@@ -4,7 +4,7 @@ Manipulate your `.env` files just with your terminal
 
 ## Installation
 ```
-go install github.com/kekda-py/dotenv
+go install github.com/kekda-py/dotenv@latest
 ```
 
 ## Usage
