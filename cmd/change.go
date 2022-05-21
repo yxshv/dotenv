@@ -1,87 +1,82 @@
 package cmd
 
 import (
-	  "github.com/spf13/cobra"
-    "os"
-    "fmt"
-    "strings"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 var addCmd = &cobra.Command{
-	  Use:   "change",
-	  Short: "Changes the variable if it exists else creates it",
-	  Long:  "Changes the variable if it exists else creates it",
-    Run: func(cmd *cobra.Command, args []string) {
+	Use:   "change",
+	Short: "Changes the variable if it exists else creates it",
+	Long:  "Changes the variable if it exists else creates it",
+	Run: func(cmd *cobra.Command, args []string) {
 
-        if len(args) < 1 {
-            fmt.Println("Your are missing the <NAME> argument.")
-            return
-        } else if len(args) < 2  {
-            fmt.Println("Your are missing the <VALUE> argument.")
-            return
-        }
+		if len(args) < 1 {
+			fmt.Println("Your are missing the <NAME> argument.")
+			return
+		} else if len(args) < 2 {
+			fmt.Println("Your are missing the <VALUE> argument.")
+			return
+		}
 
-        givenName, givenValue := args[0], args[1]
+		givenName, givenValue := args[0], args[1]
 
-        fileFlag, err := cmd.Flags().GetString("file")
+		fileFlag, err := cmd.Flags().GetString("file")
 
-        check(err)
+		check(err)
 
-        if fileFlag == "" {
-            fileFlag = ".env"
-        }
+		if fileFlag == "" {
+			fileFlag = ".env"
+		}
 
-        if strings.HasPrefix(fileFlag, ".env") == false {
-            fmt.Println("The file needs to startwith `.env`")
-            return
-        }
+		if strings.HasPrefix(fileFlag, ".env") == false {
+			fmt.Println("The file needs to startwith `.env`")
+			return
+		}
 
-        fmt.Printf("Checking for `%s`\n",fileFlag)
+		fmt.Printf("Checking for `%s`\n", fileFlag)
 
-        file, err := os.Open(fileFlag)
-        
-        if err != nil {
-            if strings.HasSuffix(err.Error(), "The system cannot find the file specified.") == true {
-                fmt.Println("file not found. so creating one..")
+		content, err := ioutil.ReadFile(fileFlag)
 
-                file, err = os.Create(fileFlag)
+		if err != nil {
+			if strings.HasSuffix(err.Error(), "no such file or directory") == true {
+				fmt.Println("file not found. so creating one..")
 
-                check(err)
+				os.Create(fileFlag)
 
-                fmt.Println("successfully created")
-            }
-        }
-        
-        defer file.Close()
+				content, err = ioutil.ReadFile(fileFlag)
 
-        var content []byte
+				check(err)
 
-        file.Read(content)
+				fmt.Println("successfully created")
+			}
+		}
 
-        if err != nil {
-            fmt.Printf("Error occured while reading the file\nError : %s \n", err)
-            return
-        }
-        
-        variables := make(map[string]string)
+		variables := make(map[string]string)
 
-        for _, v := range strings.Split(string(content), "\n") {
-            fmt.Println(v)
-            name, value := parseVar(v, "=")
-            variables[name] = value
-        }
+		for _, v := range strings.Split(string(content), "\n") {
+			if len(v) < 0 || v == "" {
+				continue
+			}
+			name, value := parseVar(v, "=")
+			variables[name] = value
+		}
 
-        variables[givenName] = givenValue
+		variables[givenName] = givenValue
 
-        content_bytes := []byte(stringify(variables))
-        os.WriteFile(fileFlag, content_bytes, 0644)
-        check(err)
+		content_bytes := []byte(stringify(variables))
+		os.WriteFile(fileFlag, content_bytes, 0644)
+		check(err)
 
-        fmt.Printf("Successfully add a variable to `%s`\n%s=%s\n",fileFlag,givenName,givenValue)
+		fmt.Printf("\nSuccessfully add a variable to `%s`\n\n%s=%s\n", fileFlag, givenName, givenValue)
 
-	  },
+	},
 }
 
 func init() {
-	  rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(addCmd)
 }

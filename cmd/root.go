@@ -3,35 +3,34 @@ package cmd
 import (
 	"fmt"
 	"os"
-  "strings"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 func parseVar(s, sep string) (string, string) {
-    x := strings.Split(s, sep)
-    if len(x) > 2 {
-        name, rest := x[0], strings.Join(x[1:],"")
-        return name, rest
-    }
-    fmt.Println(x)
-    return x[0], x[1]
+	x := strings.Split(s, sep)
+	if len(x) > 2 {
+		name, rest := x[0], strings.Join(x[1:], "")
+		return name, rest
+	}
+	return x[0], x[1]
 }
 
 func stringify(s map[string]string) string {
-    result := ""
+	result := ""
 
-    for k,v := range s {
-        result += k + "=" + v
-    }
+	for k, v := range s {
+		result += k + "=" + v + "\n"
+	}
 
-    return result
+	return result
 }
 
 func check(e error) {
-    if e != nil {
-        panic(e)
-    }
+	if e != nil {
+		panic(e)
+	}
 }
 
 var slashT string = "   "
