@@ -1,9 +1,11 @@
 # Binaries for programs and plugins
 *.exe
+dotenv
 *.exe~
 *.dll
 *.so
 *.dylib
+.env*.local
 
 # Test binary, built with `go test -c`
 *.test
