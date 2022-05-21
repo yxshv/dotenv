@@ -70,7 +70,6 @@ var addCmd = &cobra.Command{
 
 		content_bytes := []byte(stringify(variables))
 		os.WriteFile(fileFlag, content_bytes, 0644)
-		check(err)
 
 		fmt.Printf("\nSuccessfully add a variable to `%s`\n\n%s=%s\n", fileFlag, givenName, givenValue)
 
