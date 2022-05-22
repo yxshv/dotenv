@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -40,21 +41,15 @@ var addCmd = &cobra.Command{
 
 		fmt.Printf("Checking for `%s`\n", fileFlag)
 
-		content, err := ioutil.ReadFile(fileFlag)
+		if _, err := os.Stat(fileFlag); errors.Is(err, os.ErrNotExist) {
+			fmt.Println("file not found. so creating one..")
 
-		if err != nil {
-			if strings.HasSuffix(err.Error(), "no such file or directory") == true {
-				fmt.Println("file not found. so creating one..")
+			os.Create(fileFlag)
 
-				os.Create(fileFlag)
-
-				content, err = ioutil.ReadFile(fileFlag)
-
-				check(err)
-
-				fmt.Println("successfully created")
-			}
+			fmt.Println("successfully created")
 		}
+
+		content, err := ioutil.ReadFile(fileFlag)
 
 		variables := make(map[string]string)
 
