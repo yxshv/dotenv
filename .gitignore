@@ -5,6 +5,7 @@ bin
 *.dll
 *.so
 *.dylib
+.env
 .env*.local
 
 # Test binary, built with `go test -c`
@@ -15,3 +16,6 @@ bin
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# JetBrains IDE Config file (need to add this for JetBrains IDE users)
+.idea

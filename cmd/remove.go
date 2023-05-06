@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -37,7 +36,7 @@ var removeCmd = &cobra.Command{
 
 		fmt.Printf("Checking for `%s`\n", fileFlag)
 
-		content, err := ioutil.ReadFile(fileFlag)
+		content, err := os.ReadFile(fileFlag)
 
 		if err != nil {
 			if strings.HasSuffix(err.Error(), "no such file or directory") == true {
@@ -45,7 +44,7 @@ var removeCmd = &cobra.Command{
 
 				os.Create(fileFlag)
 
-				content, err = ioutil.ReadFile(fileFlag)
+				content, err = os.ReadFile(fileFlag)
 
 				check(err)
 
