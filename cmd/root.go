@@ -33,8 +33,6 @@ func check(e error) {
 	}
 }
 
-var slashT string = "   "
-
 var rootCmd = &cobra.Command{
 	Use:   "dotenv",
 	Short: "Dotenv allows you to manage your .env files",
