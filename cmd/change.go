@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -49,7 +48,7 @@ var addCmd = &cobra.Command{
 			fmt.Println("successfully created")
 		}
 
-		content, err := ioutil.ReadFile(fileFlag)
+		content, err := os.ReadFile(fileFlag)
 
 		variables := make(map[string]string)
 
